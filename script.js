@@ -4,7 +4,10 @@ async function sendMessage() {
     // Call DeepSeek-R1 API
     const response = await fetch("https://DeepSeek-R1-DnD.eastus.models.ai.azure.com", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": "BerzBfE8Tw3OOqUMXMXBPlK3DqqfMYK8" // Add your API key here
+        },
         body: JSON.stringify({ query: userMessage })
     });
 
