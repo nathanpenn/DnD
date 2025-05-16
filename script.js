@@ -13,7 +13,7 @@ async function sendMessage() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer YOUR_API_KEY_HERE"  // Replace with a securely stored API key
+                "Authorization": "BerzBfE8Tw3OOqUMXMXBPlK3DqqfMYK8"  // Replace with a securely stored API key
             },
             body: JSON.stringify({ query: userMessage })
         });
