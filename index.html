@@ -1,54 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepSeek AI Chat</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
-            text-align: center;
-        }
-        #chatbox {
-            max-width: 600px;
-            margin: auto;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 10px;
-            background: #f9f9f9;
-        }
-        input {
-            width: 80%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            padding: 10px 15px;
-            background-color: #0078D4;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #005EA6;
-        }
-        #response {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <h1>DeepSeek AI Chat</h1>
-    <div id="chatbox">
-        <input type="text" id="userInput" placeholder="Ask me anything...">
-        <button onclick="sendMessage()">Send</button>
-        <p id="response">Waiting for response...</p>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+import ModelClient from "@azure-rest/ai-inference";
+import { AzureKeyCredential } from "@azure/core-auth";
+
+const endpoint = "https://DeepSeek-R1-DnD.eastus.models.ai.azure.com";
+const modelName = "DeepSeek-R1-DnD";
+
+export async function main() {
+
+  const client = new ModelClient("https://DeepSeek-R1-DnD.eastus.models.ai.azure.com", new AzureKeyCredential("<API_KEY>"), apiVersion="2024-05-01-preview");
+
+  const response = await client.path("/chat/completions").post({
+    body: {
+      messages: [
+        { role: "system", content: "You are a helpful assistant." },
+        { role: "user", content: "I am going to Paris, what should I see?" },
+        { role: "assistant", content: "Paris, the capital of France, is known for its stunning architecture, art museums, historical landmarks, and romantic atmosphere. Here are some of the top attractions to see in Paris:\n \n 1. The Eiffel Tower: The iconic Eiffel Tower is one of the most recognizable landmarks in the world and offers breathtaking views of the city.\n 2. The Louvre Museum: The Louvre is one of the world's largest and most famous museums, housing an impressive collection of art and artifacts, including the Mona Lisa.\n 3. Notre-Dame Cathedral: This beautiful cathedral is one of the most famous landmarks in Paris and is known for its Gothic architecture and stunning stained glass windows.\n \n These are just a few of the many attractions that Paris has to offer. With so much to see and do, it's no wonder that Paris is one of the most popular tourist destinations in the world.." },
+        { role: "user", content: "What is so great about #1?" }
+      ],
+      max_tokens: 2048,
+      model: modelName,
+    }
+  });
+
+  if (response.status !== "200") {
+    throw response.body.error;
+  }
+
+  for (const choice of response.body.choices) {
+    console.log(choice.message.content);
+  }
+}
+
+main().catch((err) => {
+  console.error("The sample encountered an error:", err);
+});
